@@ -1,5 +1,5 @@
 # tengine-install-tools
-Tengine快速安装工具
+Tengine快速编译安装工具
 
 ```
 ./tengine-2.2.0-install.sh 
