@@ -8,22 +8,7 @@
 filename=$0
 action=$1 # -i/--install 执行安装软件
 script_name="./tengine-2.2.0-install.sh"
-
-init() {
-
-    TMP_INSTALL="/tmp/tengine-install-tmp/"
-    [ -d $TMP_INSTALL ] || mkdir -p $TMP_INSTALL 
-    cd $TMP_INSTALL 
-    [ -f install.log ] && echo '' > install.log || touch install.log
-
-    #if [ "$filename" = "$script_name" ];then
-    #    mkdir /usr/local/tengine
-    #else
-    #    echo "[ERROR] 脚本执行方法错误，请使用相对路径"
-    #    usage
-    #    exit 1
-    #fi
-}
+TMP_INSTALL="/tmp/tengine-install-tmp/"
 
 get_software() {
     OPENSSL_URL='https://wenyu-soft.oss-cn-hangzhou.aliyuncs.com/tengine-install-tools/openssl-1.0.2.tar.gz'
@@ -31,14 +16,33 @@ get_software() {
     TENGINE_URL='https://wenyu-soft.oss-cn-hangzhou.aliyuncs.com/tengine-install-tools/tengine-2.2.0.tar.gz'
     ZLIB_URL='https://wenyu-soft.oss-cn-hangzhou.aliyuncs.com/tengine-install-tools/zlib-1.2.11.tar.gz'
 
-    for soft in "$OPENSSL_URL $PCRE_URL $TENGINE_URL $ZLIB_URL"
-    do
-         echo "==> $soft"
-         wget -o $TMP_INSTALL/install.log  $soft
-    done
+    if [ ! -f openssl-1.0.2.tar.gz ];then
+        wget $OPENSSL_URL
+    fi
+
+    if [ ! -f pcre-8.39.tar.gz ];then
+        wget $PCRE_URL
+    fi
+
+    if [ ! -f zlib-1.2.11.tar.gz ];then
+        wget $ZLIB_URL
+
+    fi
+
+    if [ ! -f tengine-2.2.0.tar.gz ];then
+        wget $TENGINE_URL
+    fi
+
 }
 
 check_env() {
+    if [ -d $TMP_INSTALL ];then
+        rm -fr $TMP_INSTALL
+        mkdir -p $TMP_INSTALL
+    else
+        mkdir -p $TMP_INSTALL 
+    fi
+
     which gcc &>/dev/null
     RETURN=$?
     if [ $RETURN -ne 0 ];then
@@ -48,10 +52,13 @@ check_env() {
         exit 1
     fi
 
-    which wget
+    which wget &>/dev/null
     RETURN2=$?
     if [ $RETURN2 -ne 0 ];then
-        echo "yum -y install wget"
+        echo "[ERROR] 没有安装wget"
+        echo "yum安装方法：yum install  wget -y"
+        echo "deb安装方法：apt-get install wget-y"
+        exit 1
     fi
 }
 
@@ -62,7 +69,7 @@ extract_tar() {
         tar xf openssl-1.0.2.tar.gz -C $TMP_INSTALL 
         tar xf tengine-2.2.0.tar.gz -C $TMP_INSTALL 
     else
-        echo "can't find the software, Please wait download"
+        echo "can't find the software in current directory, Please wait download"
         exit 1
     fi
 }
@@ -73,12 +80,13 @@ compile() {
 }
 
 clean_env() {
-    #rm -fr  /tmp/zlib-1.2.11  /tmp/pcre-8.39  /tmp/openssl-1.0.2 /tmp/tengine-2.2.0
-    #
+    rm -fr  $TMP_INSTALL 
     echo "clean ok"
 }
 
-chown_tengine() {
+tengine_script() {
+    cd -
+    cp -f tengine /usr/local/tengine/
     id nginx &> /dev/null || useradd nginx -s /sbin/nologin
     [ -f /usr/local/tengine/conf/nginx.conf ] && sed -i '1a user nginx;'  /usr/local/tengine/conf/nginx.conf || echo "/usr/local/tengine/conf/nginx.conf 不存在"
     chown -R nginx.nginx /usr/local/tengine
@@ -90,7 +98,7 @@ install() {
     extract_tar
     compile
     clean_env
-    chown_tengine
+    tengine_script
 }
 
 usage() {
@@ -119,7 +127,7 @@ devopt() {
 
 main() {
     if [[ "$action" = "-i" || "$action" = "--install" ]];then
-        init
+      #  init
         install
         devopt
     else
