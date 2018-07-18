@@ -127,7 +127,6 @@ devopt() {
 
 main() {
     if [[ "$action" = "-i" || "$action" = "--install" ]];then
-      #  init
         install
         devopt
     else

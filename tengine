@@ -10,23 +10,29 @@
 
 nginxd=/usr/local/tengine/sbin/nginx
 nginx_config=/usr/local/tengine/conf/nginx.conf
+nginx_pid=/usr/local/tengine/logs/nginx.pid
+
 action=$1
 
 start() {
-    ps auxf|grep nginx|grep -v grep  && echo "nginx已经在运行了" && exit 0
-    $nginxd -c $nginx_config &>/dev/null && echo "start成功" || echo "start失败"
+    if [ -f $nginx_pid ];then
+        echo "    nginx已经在运行了: $nginx_pid" 
+        ps auxf |grep -v grep|grep nginx
+        exit 0
+    fi
+    $nginxd -c $nginx_config &>/dev/null && echo "    start成功" || echo "    start失败"
 }
 
 stop() {
-    $nginxd -s stop &>/dev/null && echo "stop成功" || echo "stop失败"
+    $nginxd -s stop &>/dev/null && echo "    stop成功" || echo "    stop失败,"
 }
 
 reload() {
-    $nginxd -s reload &>/dev/null && echo "reload成功" || echo "reload失败"
+    $nginxd -s reload &>/dev/null && echo "    reload成功" || echo "    reload失败"
 }
 
 status() {
-    ps auxf|grep nginx|grep -v grep || echo "tengine没有运行"
+    ps auxf|grep nginx|grep -v grep || echo "    tengine没有运行"
 }
 
 main() {
@@ -48,7 +54,9 @@ main() {
             status 
             ;;
     *)
-            echo "Usage: tengine {start|stop|restart|reload|status|help}"
+            echo ""
+            echo "    Usage: $0 {start|stop|restart|reload|status|help}"
+            echo ""
             exit 1
     esac
 }
