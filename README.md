@@ -1,5 +1,5 @@
 # Tengine快速编译安装工具 
-tengine-install-tools
+tengine-install-tools工具能够自动下载并编译安装Tengine到/usr/local/tengine中
 
 ```
 ./tengine-2.2.0-install.sh 
