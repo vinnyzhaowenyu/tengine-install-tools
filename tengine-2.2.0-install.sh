@@ -11,10 +11,10 @@ script_name="./tengine-2.2.0-install.sh"
 TMP_INSTALL="/tmp/tengine-install-tmp/"
 
 get_software() {
-    OPENSSL_URL='https://wenyu-soft.oss-cn-hangzhou.aliyuncs.com/tengine-install-tools/openssl-1.0.2.tar.gz'
-    PCRE_URL='https://wenyu-soft.oss-cn-hangzhou.aliyuncs.com/tengine-install-tools/pcre-8.39.tar.gz'
-    TENGINE_URL='https://wenyu-soft.oss-cn-hangzhou.aliyuncs.com/tengine-install-tools/tengine-2.2.0.tar.gz'
-    ZLIB_URL='https://wenyu-soft.oss-cn-hangzhou.aliyuncs.com/tengine-install-tools/zlib-1.2.11.tar.gz'
+    OPENSSL_URL='https://vinnyzhao.oss-cn-shanghai.aliyuncs.com/tengine-install-tools/openssl-1.0.2.tar.gz'
+    PCRE_URL='https://vinnyzhao.oss-cn-shanghai.aliyuncs.com/tengine-install-tools/pcre-8.39.tar.gz'
+    TENGINE_URL='https://vinnyzhao.oss-cn-shanghai.aliyuncs.com/tengine-install-tools/tengine-2.2.0.tar.gz'
+    ZLIB_URL='https://vinnyzhao.oss-cn-shanghai.aliyuncs.com/tengine-install-tools/zlib-1.2.11.tar.gz'
 
     if [ ! -f openssl-1.0.2.tar.gz ];then
         wget $OPENSSL_URL
