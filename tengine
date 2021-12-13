@@ -3,7 +3,8 @@
 ## Author   : zhaowenyu
 ## Mail     : admin@zhaowenyu.com
 ## Version  : v1.0
-## Date     : 2017-09-27
+## Date     : 2017-09-27 create
+## update.  : 2021-12-13 support run already running nginxd host
 ## Descript : tengine mananger script
 ## Charset  : set encoding=utf8 
 ######################################################
@@ -17,7 +18,7 @@ action=$1
 start() {
     if [ -f $nginx_pid ];then
         echo "    nginx已经在运行了: $nginx_pid" 
-        ps auxf |grep -v grep|grep nginx
+        ps auxf |grep -v grep|grep $nginxd
         exit 0
     fi
     $nginxd -c $nginx_config &>/dev/null && echo "    start成功" || echo "    start失败"
@@ -32,7 +33,7 @@ reload() {
 }
 
 status() {
-    ps auxf|grep nginx|grep -v grep || echo "    tengine没有运行"
+    ps auxf|grep $nginxd|grep -v grep || echo "    tengine没有运行"
 }
 
 main() {
